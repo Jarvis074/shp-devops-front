@@ -15,5 +15,11 @@ pipeline {
                 sh 'npm install'
             }
         }
+        stage("assemble") {
+            agent any
+            steps {
+                sh 'npm run build_prod'
+            }
+        }
     }
 }
