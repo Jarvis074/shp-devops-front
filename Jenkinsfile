@@ -50,7 +50,7 @@ pipeline {
                     ]
                 ) {
                     sh 'scp -i ${SERVER_KEY} ryzhenkov-numbers.prod.mshp-devops.conf ${SERVER_USERNAME}@${SERVER_IP}:nginx'
-                    sh 'ssh -i ${SERVER_KEY} ${SERVER_USERNAME}@${SERVER_IP} sudo certbot --nginx --non-interactive -d ryzhenkov-numbers.prod.mshp-devops.com'
+                    sh 'ssh -i ${SERVER_KEY} ${SERVER_USERNAME}@${SERVER_IP} sudo certbot --nginx --non-interactive -d ryzhenkov-numbers.prod.mshp-devops.conf'
                     sh 'ssh -i ${SERVER_KEY} ${SERVER_USERNAME}@${SERVER_IP} sudo systemctl reload nginx'
                 }
             }
