@@ -15,35 +15,19 @@ pipeline {
                 sh 'npm install'
             }
         }
-        stage("test") {
-            agent {
-                 docker {
-                    image 'node:latest'
-                    args '-u root'
-                }
-            }
-            steps {
-                sh 'python -m coverage run manage.py test'
-            }
-        }
-        stage("report") {
-            agent {
-                 docker {
-                    image 'node:latest'
-                    args '-u root'
-                }
-            }
-            steps {
-                sh 'python -m coverage report'
-                sh 'python -m coverage xml'
-                sh 'python -m coverage html'
-                archiveArtifacts 'htmlcov/*'
-            }
-        }
-        stage("assemble") {
+        stage("proxy config") {
             agent any
             steps {
-                sh 'npm run build_prod'
+                withCredentials(
+                    [
+                        string(credentialsId: "production_ip", variable: 'SERVER_IP'),
+                        sshUserPrivateKey(credentialsId: "production_key", keyFileVariable: 'SERVER_KEY', usernameVariable: 'SERVER_USERNAME')
+                    ]
+                ) {
+                    sh 'scp -i ${SERVER_KEY} ryzhenkov.pro.mshp-devops.conf ${SERVER_USERNAME}@${SERVER_IP}:nginx'
+                    sh 'ssh -i ${SERVER_KEY} ${SERVER_USERNAME}@${SERVER_IP} sudo certbot --nginx --non-interactive -d ryzhenkov.prod.mshp-devops.conf'
+                    sh 'ssh -i ${SERVER_KEY} ${SERVER_USERNAME}@${SERVER_IP} sudo systemctl reload nginx'
+                }
             }
         }
     }
