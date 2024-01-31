@@ -32,7 +32,7 @@ pipeline {
                 withCredentials(
                     [
                         string(credentialsId: "sonarqube_url", variable: "SONARQUBE_URL"),
-                        usernamePassword(credentialsId: "sonarqube_token", usernameVariable: "PROJECT_KEY",
+                        usernamePassword(credentialsId: "sonarqube_token_front", usernameVariable: "PROJECT_KEY",
                         passwordVariable: "PROJECT_TOKEN")
                     ]
                 ) {
